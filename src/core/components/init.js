@@ -7,6 +7,8 @@ const promisify = require('promisify-es6')
 const defaultConfig = require('../runtime/config-nodejs.js')
 const Keychain = require('libp2p-keychain')
 
+const IPNS = require('../ipns')
+
 const addDefaultAssets = require('./init-assets')
 
 module.exports = function init (self) {
@@ -102,6 +104,12 @@ module.exports = function init (self) {
         } else {
           cb(null, true)
         }
+      },
+      (_, cb) => {
+        const routing = self._repo.datastore
+
+        self._ipns = new IPNS(routing, self)
+        cb(null, true)
       },
       // add empty unixfs dir object (go-ipfs assumes this exists)
       (_, cb) => {

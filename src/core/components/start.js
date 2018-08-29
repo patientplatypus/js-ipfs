@@ -5,6 +5,8 @@ const Bitswap = require('ipfs-bitswap')
 const setImmediate = require('async/setImmediate')
 const promisify = require('promisify-es6')
 
+const IPNS = require('../ipns')
+
 module.exports = (self) => {
   return promisify((callback) => {
     const done = (err) => {
@@ -34,6 +36,9 @@ module.exports = (self) => {
       },
       (cb) => self.libp2p.start(cb),
       (cb) => {
+        const routing = self._repo.datastore
+
+        self._ipns = new IPNS(routing, self)
         self._bitswap = new Bitswap(
           self._libp2pNode,
           self._repo.blocks,
